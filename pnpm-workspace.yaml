@@ -1,0 +1,5 @@
+allowBuilds:
+  '@scarf/scarf': set this to true or false
+  esbuild: set this to true or false
+# pnpm 11: evita falha do install por scripts de build ignorados (esbuild, scarf)
+strictDepBuilds: false

@@ -1,0 +1,45 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  qualidade-e-build:
+    name: Validar Padronizacao, Tipos e Compilacao
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Baixar codigo do repositorio
+        uses: actions/checkout@v4
+
+      - name: 2. Configurar o pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: 3. Configurar Node.js 24 com cache
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm'
+
+      - name: 4. Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: 5. Validar padronizacao de codigo (ESLint)
+        run: pnpm run lint
+
+      - name: 6. Validar formatacao (Prettier)
+        run: pnpm run format:check
+
+      - name: 7. Checagem de tipos (tsc --noEmit)
+        run: pnpm run type-check
+
+      - name: 8. Compilar para producao (build)
+        run: pnpm run build
